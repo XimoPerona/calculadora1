@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .calculadora {
+            background: #222;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .pantalla {
+            background: #1a1a1a;
+            color: #fff;
+            font-size: 2.5em;
+            padding: 20px;
+            text-align: right;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+
+        .botones {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            padding: 25px;
+            font-size: 1.5em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .numero {
+            background: #505050;
+            color: #fff;
+        }
+
+        .numero:hover {
+            background: #606060;
+        }
+
+        .operador {
+            background: #ff9500;
+            color: #fff;
+        }
+
+        .operador:hover {
+            background: #ffb143;
+        }
+
+        .igual {
+            background: #34c759;
+            color: #fff;
+            grid-column: span 2;
+        }
+
+        .igual:hover {
+            background: #5dd67f;
+        }
+
+        .limpiar {
+            background: #ff3b30;
+            color: #fff;
+        }
+
+        .limpiar:hover {
+            background: #ff6259;
+        }
+
+        .cero {
+            grid-column: span 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculadora">
+        <div class="pantalla" id="pantalla">0</div>
+        <div class="botones">
+            <button class="limpiar" onclick="limpiar()">C</button>
+            <button class="operador" onclick="agregarOperador('/')">/</button>
+            <button class="operador" onclick="agregarOperador('*')">×</button>
+            
+            <button class="numero" onclick="agregarNumero('7')">7</button>
+            <button class="numero" onclick="agregarNumero('8')">8</button>
+            <button class="numero" onclick="agregarNumero('9')">9</button>
+            <button class="operador" onclick="agregarOperador('-')">-</button>
+            
+            <button class="numero" onclick="agregarNumero('4')">4</button>
+            <button class="numero" onclick="agregarNumero('5')">5</button>
+            <button class="numero" onclick="agregarNumero('6')">6</button>
+            <button class="operador" onclick="agregarOperador('+')">+</button>
+            
+            <button class="numero" onclick="agregarNumero('1')">1</button>
+            <button class="numero" onclick="agregarNumero('2')">2</button>
+            <button class="numero" onclick="agregarNumero('3')">3</button>
+            <button class="operador" onclick="borrar()">←</button>
+            
+            <button class="numero cero" onclick="agregarNumero('0')">0</button>
+            <button class="numero" onclick="agregarNumero('.')">.</button>
+            <button class="igual" onclick="calcular()">=</button>
+        </div>
+    </div>
+
+    <script>
+        let pantalla = document.getElementById('pantalla');
+        let operacionActual = '';
+        let operacionCompleta = false;
+
+        function agregarNumero(numero) {
+            if (operacionCompleta) {
+                operacionActual = numero;
+                operacionCompleta = false;
+            } else {
+                if (operacionActual === '0' && numero !== '.') {
+                    operacionActual = numero;
+                } else {
+                    operacionActual += numero;
+                }
+            }
+            actualizarPantalla();
+        }
+
+        function agregarOperador(operador) {
+            if (operacionActual === '') return;
+            
+            const ultimoCaracter = operacionActual[operacionActual.length - 1];
+            if (['+', '-', '*', '/'].includes(ultimoCaracter)) {
+                operacionActual = operacionActual.slice(0, -1) + operador;
+            } else {
+                operacionActual += operador;
+            }
+            operacionCompleta = false;
+            actualizarPantalla();
+        }
+
+        function calcular() {
+            try {
+                let resultado = eval(operacionActual);
+                operacionActual = resultado.toString();
+                operacionCompleta = true;
+                actualizarPantalla();
+            } catch (error) {
+                operacionActual = 'Error';
+                actualizarPantalla();
+            }
+        }
+
+        function limpiar() {
+            operacionActual = '0';
+            operacionCompleta = false;
+            actualizarPantalla();
+        }
+
+        function borrar() {
+            if (operacionActual.length > 1) {
+                operacionActual = operacionActual.slice(0, -1);
+            } else {
+                operacionActual = '0';
+            }
+            actualizarPantalla();
+        }
+
+        function actualizarPantalla() {
+            pantalla.textContent = operacionActual || '0';
+        }
+
+        // Soporte para teclado
+        document.addEventListener('keydown', function(event) {
+            if (event.key >= '0' && event.key <= '9' || event.key === '.') {
+                agregarNumero(event.key);
+            } else if (['+', '-', '*', '/'].includes(event.key)) {
+                agregarOperador(event.key);
+            } else if (event.key === 'Enter' || event.key === '=') {
+                calcular();
+            } else if (event.key === 'Escape') {
+                limpiar();
+            } else if (event.key === 'Backspace') {
+                borrar();
+            }
+        });
+    </script>
+</body>
+</html>
