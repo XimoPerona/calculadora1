@@ -168,3 +168,11 @@ Si encuentras algún problema o error:
 ---
 
 **¡Disfruta calculando! 🎉**
+
+#Tareas pendientes:
+- [x] Añadir funciones de memoria
+- [ ] Incluir conversión de binario a hex
+- [ ] Añadir pin de usuario
+
+#Imagen desde una URL:
+![foto](https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Felectrowizard.net%2Fwp-content%2Fimages%2Ffree-edqa-6502-Mosfet-Datasheet.jpg&f=1&nofb=1&ipt=94a08338aee9edb64ca74553614931530b0a8c2cb925b0c62d90f5e7403d5b5c)
